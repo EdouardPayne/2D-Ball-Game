@@ -11,6 +11,8 @@ var ctx = canvas.getContext('2d');
 var width = canvas.width = window.innerWidth;
 var height = canvas.height = window.innerHeight;
 
+
+
 // function to generate random number
 
 function random(min,max) {
@@ -166,7 +168,10 @@ EvilCircle.prototype.setControls = function() {
       _this.y += _this.velY;
     }
   };
+
+
 };
+
 
 // define EvilCircle collision detection
 
@@ -188,6 +193,12 @@ EvilCircle.prototype.collisionDetect = function() {
 
 
 
+EvilCircle.prototype.shoot = function(mouseX, mouseY) {
+  console.log("Evil Position" + evil.x +" "+ mouseX +" "+ mouseY)
+
+};
+
+
 // define array to store balls
 
 var balls = [];
@@ -195,7 +206,18 @@ var balls = [];
 // define loop that keeps drawing the scene constantly
 
 var evil = new EvilCircle(random(0,width), random(0,height), true);
+
 evil.setControls();
+
+
+canvas.addEventListener('click', function() { 
+  var x = event.offsetX;
+  var y = event.offsetY;
+  mouseX = x;
+  mouseY = y;
+  evil.shoot(mouseX, mouseY)
+
+}, false);
 
 function loop() {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
