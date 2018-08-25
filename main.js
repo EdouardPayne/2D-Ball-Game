@@ -52,24 +52,28 @@ Ball.prototype.draw = function() {
 // define ball update method
 
 Ball.prototype.update = function() {
-  if((this.x + this.size) >= width) {
-    this.velX = -(this.velX);
+  if(this.y <= evil.y && this.x >= evil.x){
+    differenceBetweenX = this.x - evil.x;
+    differenceBetweenY = -(this.y - evil.y);
+    console.log(differenceBetweenX);
+    console.log(differenceBetweenY);
+    this.y += this.velY;
+    this.x -= this.velX;
   }
-
-  if((this.x - this.size) <= 0) {
-    this.velX = -(this.velX);
+  if(this.y >= evil.y && this.x >= evil.x){
+    this.y -= this.velY;
+    this.x -= this.velX;
   }
+  if(this.y <= evil.y && this.x <= evil.x){
+    this.y += this.velY;
+    this.x += this.velX;
+  }  
+  if(this.y >= evil.y && this.x <= evil.x){
+    this.y -= this.velY;
+    this.x += this.velX;
+  }    
 
-  if((this.y + this.size) >= height) {
-    this.velY = -(this.velY);
-  }
 
-  if((this.y - this.size) <= 0) {
-    this.velY = -(this.velY);
-  }
-
-  this.x += this.velX;
-  this.y += this.velY;
 };
 
 // define ball collision detection
@@ -185,15 +189,15 @@ function loop() {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.fillRect(0,0,width,height);
 
-  while(balls.length < 25) {
+  while(balls.length < 20) {
     var size = random(10,20);
     var ball = new Ball(
       // ball position always drawn at least one ball width
       // away from the adge of the canvas, to avoid drawing errors
       random(0 + size,width - size),
       random(0 + size,height - size),
-      random(-7,7),
-      random(-7,7),
+      5,
+      5,
       true,
       'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
       size
