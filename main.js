@@ -52,25 +52,37 @@ Ball.prototype.draw = function() {
 // define ball update method
 
 Ball.prototype.update = function() {
-  if(this.y <= evil.y && this.x >= evil.x){
+  if(this.y <= evil.y && this.x >= evil.x){  //top right quadrant
     differenceBetweenX = this.x - evil.x;
     differenceBetweenY = -(this.y - evil.y);
-    console.log(differenceBetweenX);
-    console.log(differenceBetweenY);
-    this.y += this.velY;
-    this.x -= this.velX;
+    YMultiplier = 1-(differenceBetweenY/differenceBetweenX);
+    XMultiplier = 1 - YMultiplier;
+    this.y += this.velY * XMultiplier;
+    this.x -= this.velX * YMultiplier;
   }
-  if(this.y >= evil.y && this.x >= evil.x){
-    this.y -= this.velY;
-    this.x -= this.velX;
+  if(this.y >= evil.y && this.x >= evil.x){ //
+    differenceBetweenX = this.x - evil.x;
+    differenceBetweenY = this.y - evil.y;
+    YMultiplier = 1-(differenceBetweenY/differenceBetweenX);
+    XMultiplier = 1 - YMultiplier;
+    this.y -= this.velY * XMultiplier;
+    this.x -= this.velX * YMultiplier;
   }
   if(this.y <= evil.y && this.x <= evil.x){
-    this.y += this.velY;
-    this.x += this.velX;
+    differenceBetweenX = -(this.x - evil.x);
+    differenceBetweenY = -(this.y - evil.y);
+    YMultiplier = 1-(differenceBetweenY/differenceBetweenX);
+    XMultiplier = 1 - YMultiplier;
+    this.y += this.velY * XMultiplier;
+    this.x += this.velX * YMultiplier;
   }  
   if(this.y >= evil.y && this.x <= evil.x){
-    this.y -= this.velY;
-    this.x += this.velX;
+    differenceBetweenX = -(this.x - evil.x);
+    differenceBetweenY = this.y - evil.y;
+    YMultiplier = 1-(differenceBetweenY/differenceBetweenX);
+    XMultiplier = 1 - YMultiplier;
+    this.y -= this.velY * XMultiplier;
+    this.x += this.velX * YMultiplier;
   }    
 
 
@@ -196,8 +208,8 @@ function loop() {
       // away from the adge of the canvas, to avoid drawing errors
       random(0 + size,width - size),
       random(0 + size,height - size),
-      5,
-      5,
+      1,
+      1,
       true,
       'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
       size
