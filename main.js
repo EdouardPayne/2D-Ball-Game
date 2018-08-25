@@ -22,18 +22,20 @@ function random(min,max) {
 
 // define Character constructor
 
-function Character(x, y, velX, velY, exists) {
+function Character(x, y, velX, velY, health, exists, type) {
   this.x = x;
   this.y = y;
   this.velX = velX;
   this.velY = velY;
+  this.health = health;
   this.exists = exists;
+  this.type = type;
 }
 
 // define Enemy constructor, inheriting from Character
 
-function Enemy(x, y, velX, velY, exists, color, size) {
-  Character.call(this, x, y, velX, velY, exists);
+function Enemy(x, y, velX, velY, health, exists, color, size, type) {
+  Character.call(this, x, y, velX, velY, health, exists, type);
 
   this.color = color;
   this.size = size;
@@ -118,7 +120,7 @@ Bullet.prototype.constructor = Bullet;
 // define Player constructor, inheriting from Character
 
 function Player(x, y, exists) {
-  Character.call(this, x, y, 20, 20, exists);
+  Character.call(this, x, y, 20, 20, 10, exists, "friendly");
 
   this.color = 'white';
   this.size = 10;
@@ -238,9 +240,11 @@ function loop() {
       random(0 + size,height - size),
       1,
       1,
+      10,
       true,
       'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
-      size
+      size,
+      "enemy"
     );
     enemys.push(enemy);
     count++;
