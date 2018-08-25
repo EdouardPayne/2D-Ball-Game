@@ -1,4 +1,4 @@
-// define variable for ball count paragraph
+// define variable for enemy count paragraph
 
 var para = document.querySelector('p');
 var count = 0;
@@ -20,9 +20,9 @@ function random(min,max) {
   return num;
 }
 
-// define shape constructor
+// define Character constructor
 
-function Shape(x, y, velX, velY, exists) {
+function Character(x, y, velX, velY, exists) {
   this.x = x;
   this.y = y;
   this.velX = velX;
@@ -30,57 +30,57 @@ function Shape(x, y, velX, velY, exists) {
   this.exists = exists;
 }
 
-// define Ball constructor, inheriting from Shape
+// define Enemy constructor, inheriting from Character
 
-function Ball(x, y, velX, velY, exists, color, size) {
-  Shape.call(this, x, y, velX, velY, exists);
+function Enemy(x, y, velX, velY, exists, color, size) {
+  Character.call(this, x, y, velX, velY, exists);
 
   this.color = color;
   this.size = size;
 }
 
-Ball.prototype = Object.create(Shape.prototype);
-Ball.prototype.constructor = Ball;
+Enemy.prototype = Object.create(Character.prototype);
+Enemy.prototype.constructor = Enemy;
 
-// define ball draw method
+// define enemy draw method
 
-Ball.prototype.draw = function() {
+Enemy.prototype.draw = function() {
   ctx.beginPath();
   ctx.fillStyle = this.color;
   ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
   ctx.fill();
 };
+Enemy
+// define enemy update method
 
-// define ball update method
-
-Ball.prototype.update = function() {
-  if(this.y <= evil.y && this.x >= evil.x){  //top right quadrant
-    differenceBetweenX = this.x - evil.x;
-    differenceBetweenY = -(this.y - evil.y);
+Enemy.prototype.update = function() {
+  if(this.y <= player.y && this.x >= player.x){  //top right quadrant
+    differenceBetweenX = this.x - player.x;
+    differenceBetweenY = -(this.y - player.y);
     YMultiplier = 1-(differenceBetweenY/differenceBetweenX);
     XMultiplier = 1 - YMultiplier;
     this.y += this.velY * XMultiplier;
     this.x -= this.velX * YMultiplier;
   }
-  if(this.y >= evil.y && this.x >= evil.x){ //
-    differenceBetweenX = this.x - evil.x;
-    differenceBetweenY = this.y - evil.y;
+  if(this.y >= player.y && this.x >= player.x){ //
+    differenceBetweenX = this.x - player.x;
+    differenceBetweenY = this.y - player.y;
     YMultiplier = 1-(differenceBetweenY/differenceBetweenX);
     XMultiplier = 1 - YMultiplier;
     this.y -= this.velY * XMultiplier;
     this.x -= this.velX * YMultiplier;
   }
-  if(this.y <= evil.y && this.x <= evil.x){
-    differenceBetweenX = -(this.x - evil.x);
-    differenceBetweenY = -(this.y - evil.y);
+  if(this.y <= player.y && this.x <= player.x){
+    differenceBetweenX = -(this.x - player.x);
+    differenceBetweenY = -(this.y - player.y);
     YMultiplier = 1-(differenceBetweenY/differenceBetweenX);
     XMultiplier = 1 - YMultiplier;
     this.y += this.velY * XMultiplier;
     this.x += this.velX * YMultiplier;
   }  
-  if(this.y >= evil.y && this.x <= evil.x){
-    differenceBetweenX = -(this.x - evil.x);
-    differenceBetweenY = this.y - evil.y;
+  if(this.y >= player.y && this.x <= player.x){
+    differenceBetweenX = -(this.x - player.x);
+    differenceBetweenY = this.y - player.y;
     YMultiplier = 1-(differenceBetweenY/differenceBetweenX);
     XMultiplier = 1 - YMultiplier;
     this.y -= this.velY * XMultiplier;
@@ -90,41 +90,47 @@ Ball.prototype.update = function() {
 
 };
 
-// define ball collision detection
+// define enemy collision detection
 
-Ball.prototype.collisionDetect = function() {
-  for(var j = 0; j < balls.length; j++) {
-    if(!(this === balls[j])) {
-      var dx = this.x - balls[j].x;
-      var dy = this.y - balls[j].y;
+Enemy.prototype.collisionDetect = function() {
+  for(var j = 0; j < enemys.length; j++) {
+    if(!(this === enemys[j])) {
+      var dx = this.x - enemys[j].x;
+      var dy = this.y - enemys[j].y;
       var distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < this.size + balls[j].size && balls[j].exists) {
-        balls[j].color = this.color = 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')';
+      if (distance < this.size + enemys[j].size && enemys[j].exists) {
+        enemys[j].color = this.color = 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')';
       }
     }
   }
 };
 
 
+function Bullet(x,y, exists){
+  Character.Enemy(this, x, y, 5, 5, exists);
+}
+
+Bullet.prototype = Object.create(Character.prototype);
+Bullet.prototype.constructor = Bullet;
 
 
-// define EvilCircle constructor, inheriting from Shape
+// define Player constructor, inheriting from Character
 
-function EvilCircle(x, y, exists) {
-  Shape.call(this, x, y, 20, 20, exists);
+function Player(x, y, exists) {
+  Character.call(this, x, y, 20, 20, exists);
 
   this.color = 'white';
   this.size = 10;
 }
 
-EvilCircle.prototype = Object.create(Shape.prototype);
-EvilCircle.prototype.constructor = EvilCircle;
+Player.prototype = Object.create(Character.prototype);
+Player.prototype.constructor = Player;
 
 
-// define EvilCircle draw method
+// define Player draw method
 
-EvilCircle.prototype.draw = function() {
+Player.prototype.draw = function() {
   ctx.beginPath();
   ctx.strokeStyle = this.color;
   ctx.lineWidth = 3;
@@ -133,9 +139,9 @@ EvilCircle.prototype.draw = function() {
 };
 
 
-// define EvilCircle checkBounds method
+// define Player checkBounds method
 
-EvilCircle.prototype.checkBounds = function() {
+Player.prototype.checkBounds = function() {
   if((this.x + this.size) >= width) {
     this.x -= this.size;
   }
@@ -153,9 +159,9 @@ EvilCircle.prototype.checkBounds = function() {
   }
 };
 
-// define EvilCircle setControls method
+// define Player setControls method
 
-EvilCircle.prototype.setControls = function() {
+Player.prototype.setControls = function() {
   var _this = this;
   window.onkeydown = function(e) {
     if(e.keyCode === 65) { // a
@@ -173,19 +179,19 @@ EvilCircle.prototype.setControls = function() {
 };
 
 
-// define EvilCircle collision detection
+// define Player collision detection
 
-EvilCircle.prototype.collisionDetect = function() {
-  for(var j = 0; j < balls.length; j++) {
-    if( balls[j].exists ) {
-      var dx = this.x - balls[j].x;
-      var dy = this.y - balls[j].y;
+Player.prototype.collisionDetect = function() {
+  for(var j = 0; j < enemys.length; j++) {
+    if( enemys[j].exists ) {
+      var dx = this.x - enemys[j].x;
+      var dy = this.y - enemys[j].y;
       var distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < this.size + balls[j].size) {
-        balls[j].exists = false;
+      if (distance < this.size + enemys[j].size) {
+        enemys[j].exists = false;
         count--;
-        para.textContent = 'Ball count: ' + count;
+        para.textContent = 'Enemy count: ' + count;
       }
     }
   }
@@ -193,21 +199,21 @@ EvilCircle.prototype.collisionDetect = function() {
 
 
 
-EvilCircle.prototype.shoot = function(mouseX, mouseY) {
-  console.log("Evil Position" + evil.x +" "+ mouseX +" "+ mouseY)
+Player.prototype.shoot = function(mouseX, mouseY) {
+  console.log("Evil Position" + player.x +" "+ mouseX +" "+ mouseY)
 
 };
 
 
-// define array to store balls
+// define array to store enemys
 
-var balls = [];
+var enemys = [];
 
 // define loop that keeps drawing the scene constantly
 
-var evil = new EvilCircle(random(0,width), random(0,height), true);
+var player = new Player(random(0,width), random(0,height), true);
 
-evil.setControls();
+player.setControls();
 
 
 canvas.addEventListener('click', function() { 
@@ -215,7 +221,7 @@ canvas.addEventListener('click', function() {
   var y = event.offsetY;
   mouseX = x;
   mouseY = y;
-  evil.shoot(mouseX, mouseY)
+  player.shoot(mouseX, mouseY)
 
 }, false);
 
@@ -223,10 +229,10 @@ function loop() {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.fillRect(0,0,width,height);
 
-  while(balls.length < 20) {
+  while(enemys.length < 20) {
     var size = random(10,20);
-    var ball = new Ball(
-      // ball position always drawn at least one ball width
+    var enemy = new Enemy(
+      // enemy position always drawn at least one enemy width
       // away from the adge of the canvas, to avoid drawing errors
       random(0 + size,width - size),
       random(0 + size,height - size),
@@ -236,22 +242,22 @@ function loop() {
       'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
       size
     );
-    balls.push(ball);
+    enemys.push(enemy);
     count++;
-    para.textContent = 'Ball count: ' + count;
+    para.textContent = 'Enemy count: ' + count;
   }
 
-  for(var i = 0; i < balls.length; i++) {
-    if(balls[i].exists) {
-      balls[i].draw();
-      balls[i].update();
-      balls[i].collisionDetect();
+  for(var i = 0; i < enemys.length; i++) {
+    if(enemys[i].exists) {
+      enemys[i].draw();
+      enemys[i].update();
+      enemys[i].collisionDetect();
     }
   }
 
-  evil.draw();
-  evil.checkBounds();
-  evil.collisionDetect();
+  player.draw();
+  player.checkBounds();
+  player.collisionDetect();
 
   requestAnimationFrame(loop);
 }
