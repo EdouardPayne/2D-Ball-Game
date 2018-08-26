@@ -20,17 +20,27 @@ function random(min,max) {
   return num;
 }
 
-// define Character constructor
-
-function Character(x, y, velX, velY, health, exists, type) {
+function Circle(x, y, velX, velY, exists){
   this.x = x;
   this.y = y;
   this.velX = velX;
   this.velY = velY;
-  this.health = health;
   this.exists = exists;
+}
+
+// define Character constructor
+
+function Character(x, y, velX, velY, health, exists, type) {
+  Circle.call(this, x, y, velX, velY, exists)
+  this.health = health;
   this.type = type;
 }
+
+Character.prototype = Object.create(Circle.prototype);
+Character.prototype.constructor = Character;
+
+Circle;
+
 
 // define Enemy constructor, inheriting from Character
 
@@ -110,7 +120,7 @@ Enemy.prototype.collisionDetect = function() {
 
 
 function Bullet(x,y, exists){
-  Character.Enemy(this, x, y, 5, 5, exists);
+  Character.call(this, x, y, 5, 5, exists);
 }
 
 Bullet.prototype = Object.create(Character.prototype);
@@ -210,6 +220,7 @@ Player.prototype.shoot = function(mouseX, mouseY) {
 // define array to store enemys
 
 var enemys = [];
+var bullets = [];
 
 // define loop that keeps drawing the scene constantly
 
