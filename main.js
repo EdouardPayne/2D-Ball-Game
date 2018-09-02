@@ -28,6 +28,18 @@ function Circle(x, y, velX, velY, exists){
   this.exists = exists;
 }
 
+//Define the Circle draw method
+
+Circle.prototype.draw = function() {
+  ctx.beginPath();
+  ctx.strokeStyle = this.color;
+  ctx.lineWidth = 3;
+  ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+  ctx.stroke();
+};
+
+
+
 // define Character constructor
 
 function Character(x, y, velX, velY, health, exists, type) {
@@ -54,6 +66,8 @@ function Enemy(x, y, velX, velY, health, exists, color, size, type) {
 Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
 
+Enemy
+
 // define enemy draw method
 
 Enemy.prototype.draw = function() {
@@ -62,7 +76,7 @@ Enemy.prototype.draw = function() {
   ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
   ctx.fill();
 };
-Enemy
+
 // define enemy update method
 
 Enemy.prototype.update = function() {
@@ -120,11 +134,19 @@ Enemy.prototype.collisionDetect = function() {
 
 
 function Bullet(x,y, exists){
-  Character.call(this, x, y, 5, 5, exists);
+  Circle.call(this, x, y, 5, 5, exists);
 }
 
 Bullet.prototype = Object.create(Character.prototype);
 Bullet.prototype.constructor = Bullet;
+
+Bullet
+
+
+Bullet.prototype.update = function() {
+    this.y += this.velY;
+    this.x += this.velX;
+}  
 
 
 // define Player constructor, inheriting from Character
@@ -139,16 +161,6 @@ function Player(x, y, exists) {
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.constructor = Player;
 
-
-// define Player draw method
-
-Player.prototype.draw = function() {
-  ctx.beginPath();
-  ctx.strokeStyle = this.color;
-  ctx.lineWidth = 3;
-  ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-  ctx.stroke();
-};
 
 
 // define Player checkBounds method
@@ -213,6 +225,12 @@ Player.prototype.collisionDetect = function() {
 
 Player.prototype.shoot = function(mouseX, mouseY) {
   console.log("Evil Position" + player.x +" "+ mouseX +" "+ mouseY)
+  var bullet = new Bullet(
+      player.x,
+      player.y,
+      true
+  );
+  bullets.push(bullet);
 
 };
 
@@ -269,6 +287,15 @@ function loop() {
       enemys[i].collisionDetect();
     }
   }
+
+
+  for(var i = 0; i < bullets.length; i++) {
+    if(bullets[i].exists) {
+      bullets[i].draw();
+      bullets[i].update();
+    }
+  }
+
 
   player.draw();
   player.checkBounds();
